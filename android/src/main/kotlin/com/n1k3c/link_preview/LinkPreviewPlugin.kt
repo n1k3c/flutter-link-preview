@@ -74,7 +74,7 @@ class LinkPreviewPlugin : MethodCallHandler, EventChannel.StreamHandler {
                     event.success(data)
                     event.endOfStream()
                 } else {
-                    event.error(ERROR_TYPE, "Parsing URL error", "")
+                    event.error(ERROR_TYPE, "Parsing URL error. Check your URL for typos and/or your connection", "")
                     event.endOfStream()
                 }
             }
