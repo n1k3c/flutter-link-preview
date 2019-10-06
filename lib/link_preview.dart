@@ -13,13 +13,23 @@ class LinkPreview {
     return version;
   }
 
-  listenEvents({@required Object event, @required Object error}) {
-    eventChannel.receiveBroadcastStream("https://www.coolinarika.com/recept/1094861/").listen((dynamic event) {
-      print('Received event: $event');
-    }, onError: (dynamic error) {
+  Future<String> listenEvents(String url,
+      {@required Function onData, @required Function onError}) async {
+    // return eventChannel.receiveBroadcastStream(url).listen(onData, onError: onError);
+
+    eventChannel
+        .receiveBroadcastStream("https://www.coolinarika.com/recept/1094861/")
+        .listen((dynamic event) => _handleData(event),
+            onError: (dynamic error) {
       print('Received error: ${error.message}');
     }, onDone: () {
       print('Stream complete');
     });
   }
+
+  _handleData(event) {
+
+  }
 }
+
+class LinkPreviewModel {}
