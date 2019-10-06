@@ -27,23 +27,29 @@ class _MyAppState extends State<MyApp> {
   Future<void> getLinks() async {
     try {
       await LinkPreview.getPreview('https://www.coolinarika.com/recept/1094861/',
-          onData: (data) => _handleData(data),
+          onData: (PreviewResponse data) => _handleData(data),
           onError: (error) => _handleError(error));
 
       await LinkPreview.getPreview('https://www.coolinarika.com',
-          onData: (data) => _handleData(data),
+          onData: (PreviewResponse data) => _handleData(data),
           onError: (error) => _handleError(error));
 
       await LinkPreview.getPreview('https://www.google.com',
-          onData: (data) => _handleData(data),
+          onData: (PreviewResponse data) => _handleData(data),
           onError: (error) => _handleError(error));
     } on PlatformException {
       print('Error occured!!');
     }
   }
 
-  static _handleData(event) {
-    print('Received data: $event');
+  static _handleData(PreviewResponse previewResponse) {
+    if (previewResponse.status == PreviewStatus.complete) {
+      print('Received status: ${previewResponse.status}');
+      print('Received title: ${previewResponse.title}');
+      print('Received description: ${previewResponse.description}');
+    } else {
+      print('Received status: ${previewResponse.status}');
+    }
   }
 
   static _handleError(error) {

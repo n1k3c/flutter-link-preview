@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -14,14 +15,48 @@ class LinkPreview {
   }
 
   static Future<String> getPreview(String url,
-      {@required Function onData, @required Function onError}) async {
+      {@required Function(PreviewResponse model) onData,
+      @required Function onError}) async {
     return eventChannel
         .receiveBroadcastStream(url)
         .listen(
-          (dynamic event) => onData(event),
+          (dynamic event) => _mapData(event, onData),
           onError: (dynamic error) => onError(error),
-        ).asFuture();
+        )
+        .asFuture();
+  }
+
+  static _mapData(dynamic event, Function(PreviewResponse model) onData) {
+
+    var data = Map<String, dynamic>.from(event);
+
+    PreviewStatus status;
+
+    if (data['state'] == 'loading') {
+      status = PreviewStatus.loading;
+      PreviewResponse previewModel = PreviewResponse(status);
+      onData(previewModel);
+    } else {
+      status = PreviewStatus.complete;
+      PreviewResponse previewModel = PreviewResponse(
+        status,
+        title: data['title'],
+        description: data['description'],
+      );
+      onData(previewModel);
+    }
   }
 }
 
-class LinkPreviewModel {}
+class PreviewResponse {
+  final PreviewStatus status;
+  final String title;
+  final String description;
+
+  PreviewResponse(this.status, {this.title, this.description});
+}
+
+enum PreviewStatus {
+  loading,
+  complete
+}
