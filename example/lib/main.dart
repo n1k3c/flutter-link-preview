@@ -24,30 +24,30 @@ class _MyAppState extends State<MyApp> {
     getLinks();
   }
 
+  Future<void> getLinks() async {
+    try {
+      await LinkPreview.getPreview('https://www.coolinarika.com/recept/1094861/',
+          onData: (data) => _handleData(data),
+          onError: (error) => _handleError(error));
+
+      await LinkPreview.getPreview('https://www.coolinarika.com',
+          onData: (data) => _handleData(data),
+          onError: (error) => _handleError(error));
+
+      await LinkPreview.getPreview('https://www.google.com',
+          onData: (data) => _handleData(data),
+          onError: (error) => _handleError(error));
+    } on PlatformException {
+      print('Error occured!!');
+    }
+  }
+
   static _handleData(event) {
     print('Received data: $event');
   }
 
   static _handleError(error) {
     print('Received error: ${error.message}');
-  }
-
-  static _handleComplete() {
-    print('Compeleted!');
-  }
-
-  getLinks() async {
-    await LinkPreview.getPreview('https://www.coolinarika.com/recept/1094861/',
-        onData: (data) => _handleData(data),
-        onError: (error) => _handleError(error));
-
-    await LinkPreview.getPreview('https://www.coolinarika.com',
-        onData: (data) => _handleData(data),
-        onError: (error) => _handleError(error));
-
-    await LinkPreview.getPreview('https://www.google.com',
-        onData: (data) => _handleData(data),
-        onError: (error) => _handleError(error));
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
