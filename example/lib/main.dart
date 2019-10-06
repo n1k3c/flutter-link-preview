@@ -14,10 +14,20 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
 
+  static const EventChannel eventChannel = EventChannel('link_preview_events');
+
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+    eventChannel.receiveBroadcastStream("https://www.coolinarika.com/recept/1094861/").listen((dynamic event) {
+      print('Received event: $event');
+    }, onError: (dynamic error) {
+      print('Received error: ${error.message}');
+    }, onDone: () {
+      print('Stream complete');
+    });
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

@@ -8,35 +8,56 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import com.leocardz.link.preview.library.SourceContent
 import com.leocardz.link.preview.library.LinkPreviewCallback
 import com.leocardz.link.preview.library.TextCrawler
+import io.flutter.plugin.common.EventChannel
+import java.util.*
 
 
-class LinkPreviewPlugin : MethodCallHandler {
+class LinkPreviewPlugin : MethodCallHandler, EventChannel.StreamHandler {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val channel = MethodChannel(registrar.messenger(), "link_preview")
-            channel.setMethodCallHandler(LinkPreviewPlugin())
+            val methodChannel = MethodChannel(registrar.messenger(), "link_preview")
+            methodChannel.setMethodCallHandler(LinkPreviewPlugin())
+
+            val eventChannel = EventChannel(registrar.messenger(), "link_preview_events")
+            eventChannel.setStreamHandler(LinkPreviewPlugin())
         }
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         if (call.method == "getPlatformVersion") {
-
-            val textCrawler = TextCrawler()
-
-            val linkPreviewCallback = object : LinkPreviewCallback {
-                override fun onPre() {
-
-                }
-
-                override fun onPos(sourceContent: SourceContent, b: Boolean) {
-                    result.success("Android ${android.os.Build.VERSION.RELEASE} - " + sourceContent.title)
-                }
-            }
-
-            textCrawler.makePreview(linkPreviewCallback, "https://www.coolinarika.com/recept/1094861/")
+            result.success("Android ${android.os.Build.VERSION.RELEASE} - ")
         } else {
             result.notImplemented()
         }
     }
+
+    override fun onListen(arguments: Any, event: EventChannel.EventSink) {
+        val textCrawler = TextCrawler()
+
+
+        val linkPreviewCallback = object : LinkPreviewCallback {
+            override fun onPre() {
+                event.success("loading")
+            }
+
+            override fun onPos(sourceContent: SourceContent, b: Boolean) {
+                event.success("working")
+                if (sourceContent.isSuccess) {
+                    event.success("done = " + sourceContent.title)
+                    event.success("done2 = " + sourceContent.description)
+                    event.endOfStream()
+                }
+            }
+        }
+
+        val url: String = arguments.toString()
+
+        textCrawler.makePreview(linkPreviewCallback, url)
+    }
+
+    override fun onCancel(p0: Any?) {
+
+    }
+
 }
