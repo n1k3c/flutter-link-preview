@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
       print('Received url: ${previewResponse.url}');
       print('Received final url: ${previewResponse.finalUrl}');
       print('Received cannonical url: ${previewResponse.cannonicalUrl}');
+      print('Received html code: ${previewResponse.htmlCode}');
       print('Received row: ${previewResponse.row}');
       print('===============================================');
     } else {
