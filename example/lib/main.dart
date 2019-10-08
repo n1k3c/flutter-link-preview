@@ -44,16 +44,27 @@ class _MyAppState extends State<MyApp> {
 
   static _handleData(PreviewResponse previewResponse) {
     if (previewResponse.status == PreviewStatus.complete) {
+      print('===============================================');
       print('Received status: ${previewResponse.status}');
       print('Received title: ${previewResponse.title}');
       print('Received description: ${previewResponse.description}');
+      print('Received image: ${previewResponse.image}');
+      print('Received url: ${previewResponse.url}');
+      print('Received final url: ${previewResponse.finalUrl}');
+      print('Received cannonical url: ${previewResponse.cannonicalUrl}');
+      print('Received row: ${previewResponse.row}');
+      print('===============================================');
     } else {
+      print('===============================================');
       print('Received status: ${previewResponse.status}');
+      print('===============================================');
     }
   }
 
   static _handleError(error) {
+    print('===============================================');
     print('Received error: ${error.message}');
+    print('===============================================');
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

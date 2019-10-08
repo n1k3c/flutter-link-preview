@@ -70,6 +70,7 @@ class LinkPreviewPlugin : MethodCallHandler, EventChannel.StreamHandler {
                     data[FIELD_FINAL_URL] = sourceContent.finalUrl
                     data[FIELD_CANNONICAL_URL] = sourceContent.cannonicalUrl
                     data[FIELD_ROW] = sourceContent.raw
+                    data[FIELD_HTML_CODE] = sourceContent.htmlCode
 
                     event.success(data)
                     event.endOfStream()
