@@ -1,8 +1,8 @@
 name: link_preview
 description: Plugin for previewing links
-version: 0.0.1
-author:
-homepage:
+author: n1k3c
+homepage: https://github.com/n1k3c/flutter-link-preview
+version: 0.1.1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
