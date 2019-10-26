@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:link_preview/link_preview.dart';
 
@@ -12,32 +12,50 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _linkTitle = 'Unknown';
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+
+    getLinks();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
+  Future<void> getLinks() async {
     try {
-      platformVersion = await LinkPreview.platformVersion;
+      await LinkPreview.getPreview('https://flutter.dev',
+          onData: (PreviewResponse data) => _previewData(data),
+          onError: (error) => _handleError(error));
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      print('Error occured!!');
     }
+  }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  _previewData(PreviewResponse previewResponse) {
+    if (previewResponse.status == PreviewStatus.complete) {
+      _linkTitle = previewResponse.title;
+      print('===============================================');
+      print('Received status: ${previewResponse.status}');
+      print('Received title: ${previewResponse.title}');
+      print('Received description: ${previewResponse.description}');
+      print('Received image: ${previewResponse.image}');
+      print('Received url: ${previewResponse.url}');
+      print('Received final url: ${previewResponse.finalUrl}');
+      print('Received cannonical url: ${previewResponse.cannonicalUrl}');
+      print('Received html code: ${previewResponse.htmlCode}');
+      print('Received row: ${previewResponse.row}');
+      print('===============================================');
+    } else {
+      print('===============================================');
+      print('Received status: ${previewResponse.status}');
+      print('===============================================');
+    }
+  }
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+  static _handleError(error) {
+    print('===============================================');
+    print('Received error: ${error.message}');
+    print('===============================================');
   }
 
   @override
@@ -45,10 +63,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Link preview example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('$_linkTitle\n'),
         ),
       ),
     );

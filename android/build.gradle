@@ -18,6 +18,7 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://github.com/leonardocardoso/mvn-repo/raw/master/maven-deploy' }
     }
 }
 
@@ -41,4 +42,6 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.jsoup:jsoup:1.8.3'
+    implementation 'com.leocardz:link-preview:2.0.0@aar'
 }
