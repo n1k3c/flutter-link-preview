@@ -1,6 +1,9 @@
 name: link_preview_example
 description: Demonstrates how to use the link_preview plugin.
 publish_to: 'none'
+author: n1k3c
+homepage: https://github.com/n1k3c/flutter-link-preview
+version: 0.1.0
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
