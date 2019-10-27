@@ -1,16 +1,30 @@
-# link_preview_example
+## Usage
 
-Demonstrates how to use the link_preview plugin.
+```
+Future<void> getLinks() async { 
+     await LinkPreview.getPreview('https://flutter.dev',
+          onData: (PreviewResponse data) => _previewData(data),
+          onError: (error) => _handleError(error));
+  }
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  _previewData(PreviewResponse previewResponse) {
+    // Preview status can be `complete` (handle data) or `loading` (show loading indicator)
+    if (previewResponse.status == PreviewStatus.complete) {
+      print('Received status: ${previewResponse.status}');
+      print('Received title: ${previewResponse.title}');
+      print('Received description: ${previewResponse.description}');
+      print('Received image: ${previewResponse.image}');
+      print('Received url: ${previewResponse.url}');
+      print('Received final url: ${previewResponse.finalUrl}');
+      print('Received cannonical url: ${previewResponse.cannonicalUrl}');
+      print('Received html code: ${previewResponse.htmlCode}');
+      print('Received row: ${previewResponse.row}');      
+    } else {
+      print('Received status: ${previewResponse.status}');
+    }
+  }
+  
+  _handleError(error) {
+    print('Received error: ${error.message}');
+  }
+```
