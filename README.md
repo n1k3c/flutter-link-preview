@@ -1,6 +1,6 @@
 # link_preview
 
-Plugin for previewing links (such as title, description, image). This is a port of [Android](https://github.com/LeonardoCardoso/Android-Link-Preview) and [iOS](https://github.com/LeonardoCardoso/SwiftLinkPreview) library. Currently, only Android is supported (iOS coming soon). 
+(Flutter plugin)[https://pub.dev/packages/link_preview] for previewing links (such as title, description, image). This is a port of [Android](https://github.com/LeonardoCardoso/Android-Link-Preview) and [iOS](https://github.com/LeonardoCardoso/SwiftLinkPreview) library. Currently, only Android is supported (iOS coming soon). 
 
 ## Usage
 
