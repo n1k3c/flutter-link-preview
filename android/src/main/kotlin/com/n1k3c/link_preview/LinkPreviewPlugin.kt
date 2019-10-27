@@ -28,23 +28,12 @@ private const val FIELD_IMAGE = "image"
 
 private const val ERROR_TYPE = "Link preview error"
 
-class LinkPreviewPlugin : MethodCallHandler, EventChannel.StreamHandler {
+class LinkPreviewPlugin : EventChannel.StreamHandler {
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val methodChannel = MethodChannel(registrar.messenger(), "link_preview")
-            methodChannel.setMethodCallHandler(LinkPreviewPlugin())
-
             val eventChannel = EventChannel(registrar.messenger(), "link_preview_events")
             eventChannel.setStreamHandler(LinkPreviewPlugin())
-        }
-    }
-
-    override fun onMethodCall(call: MethodCall, result: Result) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE} - ")
-        } else {
-            result.notImplemented()
         }
     }
 
