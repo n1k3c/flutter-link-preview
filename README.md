@@ -6,13 +6,9 @@ Plugin for previewing links (such as title, description, image). This is a port 
 
 ```
 Future<void> getLinks() async {
-    try {
       await LinkPreview.getPreview('https://flutter.dev',
           onData: (PreviewResponse data) => _previewData(data),
           onError: (error) => _handleError(error));
-    } on PlatformException {
-      print('Error occured!!');
-    }
   }
 
   _previewData(PreviewResponse previewResponse) {

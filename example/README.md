@@ -1,14 +1,10 @@
 ## Usage
 
 ```
-Future<void> getLinks() async {
-    try {
-      await LinkPreview.getPreview('https://flutter.dev',
+Future<void> getLinks() async { 
+     await LinkPreview.getPreview('https://flutter.dev',
           onData: (PreviewResponse data) => _previewData(data),
           onError: (error) => _handleError(error));
-    } on PlatformException {
-      print('Error occured!!');
-    }
   }
 
   _previewData(PreviewResponse previewResponse) {
