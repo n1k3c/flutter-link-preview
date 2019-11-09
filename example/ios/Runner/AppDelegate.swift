@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import SwiftLinkPreview
 
 enum ChannelName {
     static let linkPreview = "link_preview_events"
@@ -51,11 +52,34 @@ enum Error {
                          eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
         
-        let url: String? = arguments as! String
+        let url: String? = (arguments as! String)
+        
+        eventSink([State.state : State.loading])
         
         if (url != nil) {
-            let data = [State.state : State.loading]
-            eventSink(data)
+            let slp = SwiftLinkPreview(session: URLSession.shared,
+                                       workQueue: SwiftLinkPreview.defaultWorkQueue,
+                                       responseQueue: DispatchQueue.main,
+                                       cache: DisabledCache.instance)
+            
+            slp.preview(url!,
+                        onSuccess: {
+                            result in print("\(result)")
+                            let result = [State.state : State.success,
+                                          Field.title : result.title,
+                                          Field.description : result.description,
+                                          Field.url : result.url?.absoluteString,
+                                          Field.finalUrl : result.finalUrl?.absoluteString,
+                                          Field.cannonicalUrl : result.canonicalUrl!,
+                                          Field.image : result.image]
+                            eventSink(result)
+            },
+                        onError: {
+                            error in print("\(error)")
+                            eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
+            })
+            
+           
         } else {
             eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
         }
