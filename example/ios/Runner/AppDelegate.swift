@@ -54,32 +54,8 @@ enum Error {
         
         let url: String? = (arguments as! String)
         
-        eventSink([State.state : State.loading])
-        
         if (url != nil) {
-            let slp = SwiftLinkPreview(session: URLSession.shared,
-                                       workQueue: SwiftLinkPreview.defaultWorkQueue,
-                                       responseQueue: DispatchQueue.main,
-                                       cache: DisabledCache.instance)
-            
-            slp.preview(url!,
-                        onSuccess: {
-                            result in print("\(result)")
-                            let result = [State.state : State.success,
-                                          Field.title : result.title,
-                                          Field.description : result.description,
-                                          Field.url : result.url?.absoluteString,
-                                          Field.finalUrl : result.finalUrl?.absoluteString,
-                                          Field.cannonicalUrl : result.canonicalUrl!,
-                                          Field.image : result.image]
-                            eventSink(result)
-            },
-                        onError: {
-                            error in print("\(error)")
-                            eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
-            })
-            
-           
+            previewLink(url: url!)
         } else {
             eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
         }
@@ -87,8 +63,37 @@ enum Error {
         return nil
     }
     
+    private func previewLink(url: String) {
+        guard let eventSink = eventSink else {
+            return
+        }
+        
+        eventSink([State.state : State.loading])
+        
+        let slp = SwiftLinkPreview(session: URLSession.shared,
+                                   workQueue: SwiftLinkPreview.defaultWorkQueue,
+                                   responseQueue: DispatchQueue.main,
+                                   cache: DisabledCache.instance)
+        
+        slp.preview(url,
+                    onSuccess: {
+                        result in print("\(result)")
+                        let result = [State.state : State.success,
+                                      Field.title : result.title,
+                                      Field.description : result.description,
+                                      Field.url : result.url?.absoluteString,
+                                      Field.finalUrl : result.finalUrl?.absoluteString,
+                                      Field.cannonicalUrl : result.canonicalUrl!,
+                                      Field.image : result.image]
+                        eventSink(result)
+        },
+                    onError: {
+                        error in print("\(error)")
+                        eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
+        })
+    }
+    
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        NotificationCenter.default.removeObserver(self)
         eventSink = nil
         return nil
     }
