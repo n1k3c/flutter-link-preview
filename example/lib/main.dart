@@ -26,14 +26,6 @@ class _MyAppState extends State<MyApp> {
       await LinkPreview.getPreview('https://google.com',
           onData: (PreviewResponse data) => _previewData(data),
           onError: (error) => _handleError(error));
-
-      await LinkPreview.getPreview('https://google.com',
-          onData: (PreviewResponse data) => _previewData(data),
-          onError: (error) => _handleError(error));
-
-      await LinkPreview.getPreview('https://martian.agency',
-          onData: (PreviewResponse data) => _previewData(data),
-          onError: (error) => _handleError(error));
     } on PlatformException {
       print('Error occured!!');
     }

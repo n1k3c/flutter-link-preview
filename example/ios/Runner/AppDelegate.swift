@@ -30,12 +30,14 @@ enum Error {
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate, FlutterStreamHandler {
+    var callbacks: [String: FlutterEventSink] = [:]
     private var eventSink: FlutterEventSink?
     
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         GeneratedPluginRegistrant.register(with: self)
+        
         guard let controller = window?.rootViewController as? FlutterViewController else {
             fatalError("rootViewController is not type FlutterViewController")
         }
@@ -48,18 +50,16 @@ enum Error {
     }
     
     
-    public func onListen(withArguments arguments: Any?,
-                         eventSink: @escaping FlutterEventSink) -> FlutterError? {
+    public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = eventSink
         
-        let url: String? = (arguments as! String)
-        
-        if (url != nil) {
-            previewLink(url: url!)
-        } else {
-            eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
+        guard let url = arguments as? String else {
+            let error = FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: "")
+            eventSink(error)
+            return nil
         }
-
+        
+        previewLink(url: url)
         return nil
     }
     
