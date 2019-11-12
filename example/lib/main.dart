@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> getLinks() async {
     try {
-      await LinkPreview.getPreview('https://flutter.dev',
+      await LinkPreview.getPreview('https://google.com',
           onData: (PreviewResponse data) => _previewData(data),
           onError: (error) => _handleError(error));
     } on PlatformException {

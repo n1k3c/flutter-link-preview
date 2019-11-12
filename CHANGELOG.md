@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Added iOS support
+
 ## 0.1.2
 
 * Migrate to androidx
