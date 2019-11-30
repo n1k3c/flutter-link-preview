@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - link_preview (0.0.1):
+    - Flutter
+    - SwiftLinkPreview (~> 3.0.1)
+  - SwiftLinkPreview (3.0.1)
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - link_preview (from `.symlinks/plugins/link_preview/ios`)
+
+SPEC REPOS:
+  trunk:
+    - SwiftLinkPreview
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  link_preview:
+    :path: ".symlinks/plugins/link_preview/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  link_preview: adcda4f30af2188e806ff35da523c9307549c4fb
+  SwiftLinkPreview: 7524438c43bf63a5041615713777c3d8f19a9a31
+
+PODFILE CHECKSUM: 10ae9c18d12c9ffc2275c9a159a3b1e281990db0
+
+COCOAPODS: 1.8.3
