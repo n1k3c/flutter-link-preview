@@ -23,16 +23,15 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> getLinks() async {
     try {
-      await LinkPreview.getPreview('https://google.com',
-          onData: (PreviewResponse data) => _previewData(data),
-          onError: (error) => _handleError(error));
+      PreviewResponse previewResponse = await LinkPreview.getData('https://google.com');
+      _previewData(previewResponse);
     } on PlatformException {
       print('Error occured!!');
     }
   }
 
   _previewData(PreviewResponse previewResponse) {
-    if (previewResponse.status == PreviewStatus.complete) {
+    if (previewResponse.status == PreviewStatus.success) {
       _linkTitle = previewResponse.title;
       print('===============================================');
       print('Received status: ${previewResponse.status}');
@@ -50,12 +49,6 @@ class _MyAppState extends State<MyApp> {
       print('Received status: ${previewResponse.status}');
       print('===============================================');
     }
-  }
-
-  static _handleError(error) {
-    print('===============================================');
-    print('Received error: ${error.message}');
-    print('===============================================');
   }
 
   @override
