@@ -38,7 +38,10 @@ class _MyAppState extends State<MyApp> {
 
   _previewData(PreviewResponse previewResponse) {
     if (previewResponse.status == PreviewStatus.success) {
-      _linkTitle = previewResponse.title;
+      setState(() {
+        _linkTitle = previewResponse.title;
+      });
+
       print('===============================================');
       print('Received status: ${previewResponse.status}');
       print('Received title: ${previewResponse.title}');
