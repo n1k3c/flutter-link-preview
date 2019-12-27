@@ -25,6 +25,12 @@ class _MyAppState extends State<MyApp> {
     try {
       PreviewResponse previewResponse = await LinkPreview.getData('https://google.com');
       _previewData(previewResponse);
+
+      PreviewResponse previewResponse2 = await LinkPreview.getData('https://facebook.com');
+      _previewData(previewResponse2);
+
+      PreviewResponse previewResponse3 = await LinkPreview.getData('https://amazon.com');
+      _previewData(previewResponse3);
     } on PlatformException {
       print('Error occured!!');
     }

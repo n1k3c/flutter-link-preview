@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class LinkPreview {
-  static const MethodChannel methodChannel = MethodChannel('link_preview_method');
+  static const MethodChannel methodChannel = MethodChannel('link_preview_channel');
   static const EventChannel eventChannel = EventChannel('link_preview_events');
 
   static Future<String> getPreview(String url,
@@ -20,7 +20,10 @@ class LinkPreview {
   }
 
   static Future<PreviewResponse> getData(String url) async {
-    var result = await methodChannel.invokeMethod("previewLink", url);
+    Map<String, dynamic> args = <String, dynamic>{};
+    args.putIfAbsent("url", () => url);
+
+    var result = await methodChannel.invokeMethod("previewLink", args);
     PreviewResponse previewResponse = _mapResultToResponse(result);
     return previewResponse;
   }
