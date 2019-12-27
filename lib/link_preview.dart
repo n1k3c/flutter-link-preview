@@ -45,8 +45,12 @@ class LinkPreview {
         row: data['row'],
         htmlCode: data['html_code'],
       );
+    } else if (data['state'] == 'wrong_url_error') {
+      previewResponse = PreviewResponse(PreviewStatus.wrongUrlError);
+    } else if (data['state'] == 'parsing_error') {
+      previewResponse = PreviewResponse(PreviewStatus.parsingError);
     } else {
-      previewResponse = PreviewResponse(PreviewStatus.error);
+      previewResponse = PreviewResponse(PreviewStatus.otherError);
     }
 
     return previewResponse;
@@ -102,4 +106,4 @@ class PreviewResponse {
       this.htmlCode});
 }
 
-enum PreviewStatus { success, error }
+enum PreviewStatus { success, wrongUrlError, parsingError, otherError }

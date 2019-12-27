@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> getLinks() async {
     try {
-      PreviewResponse previewResponse = await LinkPreview.getData('https://google.com');
+      PreviewResponse previewResponse = await LinkPreview.getData('https://googfdsfsdle.com');
       _previewData(previewResponse);
 
       PreviewResponse previewResponse2 = await LinkPreview.getData('https://facebook.com');
@@ -50,9 +50,20 @@ class _MyAppState extends State<MyApp> {
       print('Received html code: ${previewResponse.htmlCode}');
       print('Received row: ${previewResponse.row}');
       print('===============================================');
+    } else if (previewResponse.status == PreviewStatus.wrongUrlError) {
+      print('===============================================');
+      print('Received status: ${previewResponse.status}');
+      print('Wrong URL');
+      print('===============================================');
+    } else if (previewResponse.status == PreviewStatus.parsingError) {
+      print('===============================================');
+      print('Received status: ${previewResponse.status}');
+      print('Parsing URL error');
+      print('===============================================');
     } else {
       print('===============================================');
       print('Received status: ${previewResponse.status}');
+      print('Other error');
       print('===============================================');
     }
   }

@@ -10,7 +10,8 @@ enum State {
     static let state = "state"
     static let loading = "loading"
     static let success = "success"
-    static let error = "error"
+    static let parsingError = "parsing_error"
+    static let wrongUrlError = "wrong_url_error"
 }
 
 enum Field {
@@ -42,7 +43,10 @@ public class SwiftLinkPreviewPlugin: NSObject, FlutterPlugin  {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
       if(call.method.elementsEqual("previewLink")){
           let arguments = call.arguments as? NSDictionary
-        guard let url = arguments!["url"] as? String else { return }
+        guard let url = arguments!["url"] as? String else {
+            result([State.state : State.wrongUrlError])
+            return
+        }
         
        let slp = SwiftLinkPreview(session: URLSession.shared,
                                            workQueue: SwiftLinkPreview.defaultWorkQueue,
@@ -64,7 +68,7 @@ public class SwiftLinkPreviewPlugin: NSObject, FlutterPlugin  {
                 },
                             onError: {
                                 error in print("\(error)")
-                                result(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
+                                result([State.state : State.parsingError])
                 })
       }
     }

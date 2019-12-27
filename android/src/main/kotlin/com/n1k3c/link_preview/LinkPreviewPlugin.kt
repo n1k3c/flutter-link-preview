@@ -12,9 +12,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 
 
 private const val STATE = "state"
-private const val STATE_LOADING = "loading"
 private const val STATE_SUCCESS = "success"
-private const val STATE_ERROR = "error"
+private const val STATE_PARSING_ERROR = "parsing_error"
+private const val STATE_WRONG_URL = "wrong_url_error"
 
 private const val FIELD_TITLE = "title"
 private const val FIELD_DESC = "description"
@@ -28,7 +28,7 @@ private const val FIELD_IMAGE = "image"
 private const val ERROR_TYPE = "Link preview error"
 
 class LinkPreviewPlugin : MethodCallHandler {
-    
+
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
@@ -40,6 +40,7 @@ class LinkPreviewPlugin : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: Result) {
         if (call.method.equals("previewLink")) {
             val url: String? = call.argument("url")
+
             previewLink(url, result)
         } else {
             result.notImplemented()
@@ -68,12 +69,16 @@ class LinkPreviewPlugin : MethodCallHandler {
 
                     result.success(data)
                 } else {
-                    result.error(ERROR_TYPE, "Parsing URL error. Check your URL for typos and/or your connection", "")
+                    data[STATE] = STATE_PARSING_ERROR
+                    result.success(data)
                 }
             }
         }
 
-        if (url.isNullOrBlank()) result.error(ERROR_TYPE, "URL is blank", "")
+        if (url.isNullOrBlank()) {
+            data[STATE] = STATE_WRONG_URL
+            result.success(data)
+        }
 
         textCrawler.makePreview(linkPreviewCallback, url)
     }
