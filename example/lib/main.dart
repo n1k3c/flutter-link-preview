@@ -23,17 +23,25 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> getLinks() async {
     try {
-      await LinkPreview.getPreview('https://google.com',
-          onData: (PreviewResponse data) => _previewData(data),
-          onError: (error) => _handleError(error));
+      PreviewResponse previewResponse = await LinkPreview.getPreview('https://google.com');
+      _previewData(previewResponse);
+
+      PreviewResponse previewResponse2 = await LinkPreview.getPreview('https://facebook.com');
+      _previewData(previewResponse2);
+
+      PreviewResponse previewResponse3 = await LinkPreview.getPreview('https://amazon.com');
+      _previewData(previewResponse3);
     } on PlatformException {
       print('Error occured!!');
     }
   }
 
   _previewData(PreviewResponse previewResponse) {
-    if (previewResponse.status == PreviewStatus.complete) {
-      _linkTitle = previewResponse.title;
+    if (previewResponse.status == PreviewStatus.success) {
+      setState(() {
+        _linkTitle = previewResponse.title;
+      });
+
       print('===============================================');
       print('Received status: ${previewResponse.status}');
       print('Received title: ${previewResponse.title}');
@@ -45,17 +53,22 @@ class _MyAppState extends State<MyApp> {
       print('Received html code: ${previewResponse.htmlCode}');
       print('Received row: ${previewResponse.row}');
       print('===============================================');
+    } else if (previewResponse.status == PreviewStatus.wrongUrlError) {
+      print('===============================================');
+      print('Received status: ${previewResponse.status}');
+      print('Wrong URL');
+      print('===============================================');
+    } else if (previewResponse.status == PreviewStatus.parsingError) {
+      print('===============================================');
+      print('Received status: ${previewResponse.status}');
+      print('Parsing URL error');
+      print('===============================================');
     } else {
       print('===============================================');
       print('Received status: ${previewResponse.status}');
+      print('Other error');
       print('===============================================');
     }
-  }
-
-  static _handleError(error) {
-    print('===============================================');
-    print('Received error: ${error.message}');
-    print('===============================================');
   }
 
   @override

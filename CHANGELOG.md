@@ -1,3 +1,9 @@
+## 0.1.5
+
+* Refactor from events to method call
+* Remove loading state (handle that in app)
+* Better error handling
+
 ## 0.1.4
 
 * Fix iOS bug

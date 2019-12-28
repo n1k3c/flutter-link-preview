@@ -3,14 +3,15 @@ import UIKit
 import SwiftLinkPreview
 
 enum ChannelName {
-    static let linkPreview = "link_preview_events"
+    static let linkPreview = "link_preview_channel"
 }
 
 enum State {
     static let state = "state"
     static let loading = "loading"
     static let success = "success"
-    static let error = "error"
+    static let parsingError = "parsing_error"
+    static let wrongUrlError = "wrong_url_error"
 }
 
 enum Field {
@@ -28,64 +29,47 @@ enum Error {
     static let errorType = "Link preview error"
 }
 
-public class SwiftLinkPreviewPlugin: NSObject, FlutterPlugin, FlutterStreamHandler  {
-    
-    private var eventSink: FlutterEventSink?
+public class SwiftLinkPreviewPlugin: NSObject, FlutterPlugin  {
     
   public static func register(with registrar: FlutterPluginRegistrar) {
     
-    let linkPreviewChannel = FlutterEventChannel(name: ChannelName.linkPreview,
+    let linkPreviewChannel = FlutterMethodChannel(name: ChannelName.linkPreview,
                                                      binaryMessenger: registrar.messenger())
     
-    linkPreviewChannel.setStreamHandler(SwiftLinkPreviewPlugin())
 
+    registrar.addMethodCallDelegate(SwiftLinkPreviewPlugin(), channel: linkPreviewChannel)
   }
-
-  public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
-         self.eventSink = eventSink
-         
-         guard let url = arguments as? String else {
-             let error = FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: "")
-             eventSink(error)
-             return nil
-         }
-         
-         previewLink(url: url)
-         return nil
-     }
-     
-     private func previewLink(url: String) {
-         guard let eventSink = eventSink else {
-             return
-         }
-         
-         eventSink([State.state : State.loading])
-         
-         let slp = SwiftLinkPreview(session: URLSession.shared,
-                                    workQueue: SwiftLinkPreview.defaultWorkQueue,
-                                    responseQueue: DispatchQueue.main,
-                                    cache: DisabledCache.instance)
-         
-         slp.preview(url,
-                     onSuccess: {
-                         result in print("\(result)")
-                         let result = [State.state : State.success,
-                                       Field.title : result.title,
-                                       Field.description : result.description,
-                                       Field.url : result.url?.absoluteString,
-                                       Field.finalUrl : result.finalUrl?.absoluteString,
-                                       Field.cannonicalUrl : result.canonicalUrl!,
-                                       Field.image : result.image]
-                         eventSink(result)
-         },
-                     onError: {
-                         error in print("\(error)")
-                         eventSink(FlutterError(code: Error.errorType, message: "Parsing URL error. Check your URL for typos and/or your connection", details: ""))
-         })
-     }
-     
-     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-         eventSink = nil
-         return nil
-     }
+    
+    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+      if(call.method.elementsEqual("previewLink")){
+          let arguments = call.arguments as? NSDictionary
+        guard let url = arguments!["url"] as? String else {
+            result([State.state : State.wrongUrlError])
+            return
+        }
+        
+       let slp = SwiftLinkPreview(session: URLSession.shared,
+                                           workQueue: SwiftLinkPreview.defaultWorkQueue,
+                                           responseQueue: DispatchQueue.main,
+                                           cache: DisabledCache.instance)
+       
+                slp.preview(url,
+                            onSuccess: {
+                                res in print("\(res)")
+                                let data = [State.state : State.success,
+                                              Field.title : res.title,
+                                              Field.description : res.description,
+                                              Field.url : res.url?.absoluteString,
+                                              Field.finalUrl : res.finalUrl?.absoluteString,
+                                              Field.cannonicalUrl : res.canonicalUrl!,
+                                              Field.image : res.image]
+                                result(data)
+                               
+                },
+                            onError: {
+                                error in print("\(error)")
+                                result([State.state : State.parsingError])
+                })
+      }
+    }
 }
